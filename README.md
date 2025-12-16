@@ -1,1 +1,1 @@
-# Mago-Scan.github.io
+# /SCAN
