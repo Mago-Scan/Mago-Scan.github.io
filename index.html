@@ -9,228 +9,342 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #f6f8fa;
+            color: #24292f;
             padding: 20px;
             line-height: 1.6;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            padding: 30px;
         }
         
         header {
             text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #007acc;
+            border-bottom: 1px solid #d0d7de;
         }
         
         h1 {
-            color: #007acc;
-            font-size: 24px;
+            color: #0969da;
+            font-size: 28px;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
-        .path-display {
-            background-color: #f0f8ff;
+        .path-info {
+            background-color: #f6f8fa;
             padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border-left: 4px solid #007acc;
-            font-family: monospace;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            border: 1px solid #d0d7de;
+            font-family: 'SFMono-Regular', Consolas, monospace;
             font-size: 14px;
         }
         
-        .path-display strong {
-            color: #007acc;
-        }
-        
-        .folder-contents {
+        .contents {
             margin-top: 20px;
         }
         
-        .folder-item {
+        .item {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
+            padding: 12px 16px;
             margin-bottom: 8px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            border: 1px solid #e0e0e0;
-            transition: background-color 0.2s;
+            background-color: #ffffff;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
         }
         
-        .folder-item:hover {
-            background-color: #edf7ff;
-            border-color: #cce5ff;
+        .item:hover {
+            background-color: #f6f8fa;
+            border-color: #0969da;
+            transform: translateY(-2px);
         }
         
         .item-icon {
             font-size: 20px;
-            margin-right: 15px;
-            width: 30px;
+            margin-right: 12px;
+            width: 24px;
             text-align: center;
         }
         
-        .folder-icon {
-            color: #007acc;
+        .folder {
+            color: #54aeff;
         }
         
-        .file-icon {
-            color: #666;
+        .file {
+            color: #57606a;
+        }
+        
+        .item-info {
+            flex: 1;
         }
         
         .item-name {
-            flex: 1;
-            font-size: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 2px;
         }
         
-        .empty-folder {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-style: italic;
-        }
-        
-        .empty-folder .icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            opacity: 0.5;
+        .item-details {
+            font-size: 12px;
+            color: #57606a;
         }
         
         .loading {
             text-align: center;
             padding: 40px;
-            color: #007acc;
+            color: #57606a;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0969da;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background-color: #ffebe9;
+            border: 1px solid #ff8182;
+            border-radius: 6px;
+            padding: 20px;
+            color: #cf222e;
+            text-align: center;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #57606a;
+            font-style: italic;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
         }
         
         footer {
             margin-top: 30px;
             text-align: center;
-            color: #666;
+            color: #57606a;
             font-size: 14px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #d0d7de;
         }
         
         .refresh-btn {
-            background-color: #007acc;
+            background-color: #0969da;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
             margin-top: 10px;
             transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .refresh-btn:hover {
-            background-color: #005a99;
+            background-color: #0550ae;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📂 Conteúdo da Pasta SCAN</h1>
-            <p>Visualizador de arquivos e pastas</p>
+            <h1>
+                <span>📂</span>
+                Pasta SCAN
+            </h1>
+            <p>Conteúdo do diretório SCAN no repositório GitHub</p>
         </header>
         
-        <div class="path-display">
-            <strong>Localização:</strong> ./SCAN/
+        <div class="path-info">
+            <strong>Caminho:</strong> /SCAN/
+            <br>
+            <small>Repositório: <span id="repo-info">Carregando...</span></small>
         </div>
         
-        <div id="contents" class="folder-contents">
+        <div id="contents" class="contents">
             <div class="loading">
+                <div class="spinner"></div>
                 <p>Carregando conteúdo da pasta SCAN...</p>
             </div>
         </div>
         
         <footer>
-            <p>Visualizador de pasta SCAN</p>
-            <button class="refresh-btn" onclick="loadContents()">🔄 Atualizar</button>
+            <p>Visualizador de diretório GitHub</p>
+            <button class="refresh-btn" onclick="loadContents()">
+                <span>🔄</span>
+                Atualizar
+            </button>
             <p id="last-update" style="margin-top: 10px; font-size: 12px;"></p>
         </footer>
     </div>
 
     <script>
-        // Função para carregar o conteúdo da pasta
-        function loadContents() {
-            const contentsDiv = document.getElementById('contents');
-            const lastUpdate = document.getElementById('last-update');
-            
-            // Mostrar estado de carregamento
-            contentsDiv.innerHTML = '<div class="loading"><p>Carregando conteúdo da pasta SCAN...</p></div>';
-            
-            // Simular carregamento (em um sistema real, isso seria uma chamada AJAX)
-            setTimeout(() => {
-                // Dados simulados - em um sistema real, isso viria do servidor
-                const simulatedContents = [
-                    { name: 'arquivos', type: 'folder', items: 12 },
-                    { name: 'documentos', type: 'folder', items: 8 },
-                    { name: 'imagens', type: 'folder', items: 24 },
-                    { name: 'relatorio.pdf', type: 'file', size: '2.4 MB' },
-                    { name: 'dados.csv', type: 'file', size: '512 KB' },
-                    { name: 'config.json', type: 'file', size: '5 KB' },
-                    { name: 'backup', type: 'folder', items: 3 },
-                    { name: 'logs', type: 'folder', items: 15 }
-                ];
+        // Configurações do repositório
+        const REPO_OWNER = 'SEU_USUARIO'; // Substitua pelo seu nome de usuário
+        const REPO_NAME = 'SEU_REPOSITORIO'; // Substitua pelo nome do repositório
+        const SCAN_PATH = 'SCAN'; // Nome da pasta
+        
+        // Elementos DOM
+        const contentsDiv = document.getElementById('contents');
+        const lastUpdateSpan = document.getElementById('last-update');
+        const repoInfoSpan = document.getElementById('repo-info');
+        
+        // Função para atualizar timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            lastUpdateSpan.textContent = `Última atualização: ${now.toLocaleTimeString('pt-BR')}`;
+        }
+        
+        // Função para mostrar erro
+        function showError(message) {
+            contentsDiv.innerHTML = `
+                <div class="error">
+                    <h3>❌ Erro ao carregar conteúdo</h3>
+                    <p>${message}</p>
+                    <p style="margin-top: 10px; font-size: 12px;">
+                        Certifique-se de que o repositório e o caminho estão configurados corretamente.
+                    </p>
+                </div>
+            `;
+            updateTimestamp();
+        }
+        
+        // Função para mostrar pasta vazia
+        function showEmpty() {
+            contentsDiv.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">📂</div>
+                    <h3>Pasta vazia</h3>
+                    <p>A pasta SCAN não contém nenhum arquivo ou subpasta.</p>
+                </div>
+            `;
+        }
+        
+        // Função para carregar conteúdo da pasta SCAN
+        async function loadContents() {
+            try {
+                // Atualizar informações do repositório
+                repoInfoSpan.textContent = `${REPO_OWNER}/${REPO_NAME}`;
                 
-                // Ordenar: pastas primeiro, depois arquivos
-                simulatedContents.sort((a, b) => {
-                    if (a.type === 'folder' && b.type !== 'folder') return -1;
-                    if (a.type !== 'folder' && b.type === 'folder') return 1;
+                // Mostrar estado de carregamento
+                contentsDiv.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Carregando conteúdo da pasta SCAN...</p>
+                    </div>
+                `;
+                
+                // Usar a API do GitHub para listar o conteúdo da pasta
+                const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${SCAN_PATH}`;
+                
+                console.log('Buscando:', apiUrl); // Para debug
+                
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        showError(`Pasta "${SCAN_PATH}" não encontrada no repositório.`);
+                    } else {
+                        showError(`Erro ${response.status}: ${response.statusText}`);
+                    }
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                // Verificar se é um array (conteúdo da pasta) ou um objeto (arquivo único)
+                if (!Array.isArray(data)) {
+                    showError(`"${SCAN_PATH}" é um arquivo, não uma pasta.`);
+                    return;
+                }
+                
+                // Ordenar: pastas primeiro, depois arquivos, ambos em ordem alfabética
+                data.sort((a, b) => {
+                    if (a.type === 'dir' && b.type !== 'dir') return -1;
+                    if (a.type !== 'dir' && b.type === 'dir') return 1;
                     return a.name.localeCompare(b.name);
                 });
                 
                 // Construir HTML
-                let html = '';
-                
-                if (simulatedContents.length === 0) {
-                    html = `
-                        <div class="empty-folder">
-                            <div class="icon">📂</div>
-                            <h3>Pasta vazia</h3>
-                            <p>A pasta SCAN não contém nenhum arquivo ou pasta</p>
-                        </div>
-                    `;
+                if (data.length === 0) {
+                    showEmpty();
                 } else {
-                    simulatedContents.forEach(item => {
-                        const icon = item.type === 'folder' ? '📁' : '📄';
-                        const iconClass = item.type === 'folder' ? 'folder-icon' : 'file-icon';
-                        const info = item.type === 'folder' ? `${item.items} itens` : item.size;
+                    let html = '';
+                    
+                    data.forEach(item => {
+                        const isFolder = item.type === 'dir';
+                        const icon = isFolder ? '📁' : '📄';
+                        const iconClass = isFolder ? 'folder' : 'file';
+                        const typeText = isFolder ? 'Pasta' : 'Arquivo';
+                        const sizeInfo = isFolder ? '' : ` • ${formatBytes(item.size || 0)}`;
+                        const itemUrl = item.html_url;
                         
                         html += `
-                            <div class="folder-item">
+                            <a href="${itemUrl}" target="_blank" class="item">
                                 <div class="item-icon ${iconClass}">${icon}</div>
-                                <div class="item-name">
-                                    <strong>${item.name}</strong>
-                                    <div style="font-size: 12px; color: #666; margin-top: 3px;">
-                                        ${item.type === 'folder' ? 'Pasta' : 'Arquivo'} • ${info}
+                                <div class="item-info">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-details">
+                                        ${typeText}${sizeInfo}
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         `;
                     });
+                    
+                    contentsDiv.innerHTML = html;
                 }
                 
-                contentsDiv.innerHTML = html;
+                updateTimestamp();
                 
-                // Atualizar timestamp
-                const now = new Date();
-                lastUpdate.textContent = `Última atualização: ${now.toLocaleTimeString('pt-BR')}`;
-            }, 500); // Simular delay de carregamento
+            } catch (error) {
+                console.error('Erro:', error);
+                showError(`Erro de conexão: ${error.message}`);
+            }
+        }
+        
+        // Função para formatar bytes
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
         
         // Carregar conteúdo quando a página for aberta
