@@ -1,1 +1,314 @@
-# SCAN/
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador da Pasta SCAN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00b4db, #0083b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+        }
+        
+        .folder-structure {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .folder-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 131, 176, 0.5);
+        }
+        
+        .folder-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #00b4db;
+        }
+        
+        .folder-title h2 {
+            font-size: 1.8rem;
+            color: #ffffff;
+        }
+        
+        .tree-view {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+        
+        .folder {
+            color: #00b4db;
+            font-weight: bold;
+        }
+        
+        .file {
+            color: #e6e6e6;
+        }
+        
+        .folder-contents {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .folder-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .folder-card:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 131, 176, 0.1);
+            border-color: rgba(0, 180, 219, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-icon {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: #00b4db;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        
+        .card-description {
+            font-size: 0.95rem;
+            color: #b0b0b0;
+            line-height: 1.5;
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 40px;
+            border-left: 5px solid #00b4db;
+        }
+        
+        .instructions h3 {
+            color: #00b4db;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .instruction-list {
+            padding-left: 20px;
+        }
+        
+        .instruction-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .last-updated {
+            background: rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 768px) {
+            .folder-contents {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tree-view {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📂 Pasta SCAN</h1>
+            <p class="subtitle">Visualizador interativo da estrutura de arquivos e diretórios</p>
+        </header>
+        
+        <section class="folder-structure">
+            <div class="folder-title">
+                <div class="folder-icon">📁</div>
+                <h2>Estrutura da Pasta</h2>
+            </div>
+            
+            <div class="tree-view">
+                <div class="folder">SCAN/</div>
+                <div style="margin-left: 20px;">
+                    <div class="folder">├── arquivos/</div>
+                    <div class="folder">├── relatorios/</div>
+                    <div class="folder">├── logs/</div>
+                    <div class="folder">└── resultados/</div>
+                </div>
+            </div>
+            
+            <div class="folder-contents">
+                <div class="folder-card" onclick="navigateTo('arquivos')">
+                    <div class="card-icon">📄</div>
+                    <h3 class="card-title">Arquivos</h3>
+                    <p class="card-description">Contém os arquivos originais que foram escaneados e processados.</p>
+                </div>
+                
+                <div class="folder-card" onclick="navigateTo('relatorios')">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Relatórios</h3>
+                    <p class="card-description">Relatórios detalhados gerados a partir das análises realizadas.</p>
+                </div>
+                
+                <div class="folder-card" onclick="navigateTo('logs')">
+                    <div class="card-icon">📋</div>
+                    <h3 class="card-title">Logs</h3>
+                    <p class="card-description">Registros de processamento, erros e atividades do sistema.</p>
+                </div>
+                
+                <div class="folder-card" onclick="navigateTo('resultados')">
+                    <div class="card-icon">✅</div>
+                    <h3 class="card-title">Resultados</h3>
+                    <p class="card-description">Resultados finais e sumários das análises realizadas.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="instructions">
+            <h3>📝 Como Utilizar</h3>
+            <ol class="instruction-list">
+                <li><strong>Para adicionar novos arquivos:</strong> Faça upload ou copie os arquivos para a pasta "arquivos"</li>
+                <li><strong>Para visualizar relatórios:</strong> Acesse a pasta "relatorios" para ver os documentos gerados</li>
+                <li><strong>Para monitorar processamento:</strong> Verifique a pasta "logs" para acompanhar o status</li>
+                <li><strong>Para resultados finais:</strong> Consulte a pasta "resultados" para obter as análises completas</li>
+            </ol>
+        </section>
+        
+        <footer>
+            <p>Visualizador interativo da pasta SCAN</p>
+            <div class="last-updated" id="lastUpdated">
+                Última atualização: Carregando...
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Atualiza a data de última modificação
+        function updateLastModifiedDate() {
+            const now = new Date();
+            const options = { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const formattedDate = now.toLocaleDateString('pt-BR', options);
+            document.getElementById('lastUpdated').textContent = 
+                `Última atualização: ${formattedDate}`;
+        }
+        
+        // Função para navegar para as pastas (simulação)
+        function navigateTo(folderName) {
+            const folderNames = {
+                'arquivos': 'Arquivos',
+                'relatorios': 'Relatórios',
+                'logs': 'Logs',
+                'resultados': 'Resultados'
+            };
+            
+            alert(`Navegando para a pasta: ${folderNames[folderName]}\n\nEm um ambiente real, esta ação abriria o diretório correspondente.`);
+            
+            // Em um ambiente real, você redirecionaria para a pasta:
+            // window.location.href = `./SCAN/${folderName}/`;
+        }
+        
+        // Adiciona interatividade aos cards
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLastModifiedDate();
+            
+            // Adiciona efeito de clique aos cards
+            const cards = document.querySelectorAll('.folder-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+            
+            // Simula atualização periódica
+            setInterval(updateLastModifiedDate, 60000); // Atualiza a cada minuto
+        });
+    </script>
+</body>
+</html>
