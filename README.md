@@ -1,0 +1,1 @@
+# Mago-Scan.github.io
