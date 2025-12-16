@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador da Pasta SCAN</title>
+    <title>Identificador de Pastas SCAN</title>
     <style>
         * {
             margin: 0;
@@ -13,14 +13,14 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             color: #e6e6e6;
             min-height: 100vh;
             padding: 20px;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -28,166 +28,365 @@
         header {
             text-align: center;
             margin-bottom: 40px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
         }
         
         h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #00b4db, #0083b0);
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         .subtitle {
-            font-size: 1.1rem;
-            color: #a0a0a0;
-            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #b0d0ff;
+            margin-bottom: 10px;
         }
         
-        .folder-structure {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            padding: 25px;
+        .scan-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .info-card {
+            background: rgba(0, 50, 100, 0.3);
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 180, 255, 0.3);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
             margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
-        .folder-title {
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .folder-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+        }
+        
+        .panel-title {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 131, 176, 0.5);
+            border-bottom: 2px solid rgba(0, 180, 255, 0.5);
         }
         
-        .folder-icon {
-            font-size: 2.5rem;
-            margin-right: 15px;
-            color: #00b4db;
-        }
-        
-        .folder-title h2 {
+        .panel-icon {
             font-size: 1.8rem;
+            margin-right: 12px;
+            color: #00d2ff;
+        }
+        
+        .panel-title h2 {
+            font-size: 1.5rem;
             color: #ffffff;
+        }
+        
+        .tree-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .tree-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .tree-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .tree-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 180, 255, 0.5);
+            border-radius: 10px;
         }
         
         .tree-view {
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 1.1rem;
             line-height: 1.8;
-            padding-left: 20px;
         }
         
-        .folder {
-            color: #00b4db;
-            font-weight: bold;
-        }
-        
-        .file {
-            color: #e6e6e6;
-        }
-        
-        .folder-contents {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .folder-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
+        .folder-node {
+            margin-bottom: 5px;
             cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.2s;
         }
         
-        .folder-card:hover {
-            transform: translateY(-5px);
-            background: rgba(0, 131, 176, 0.1);
-            border-color: rgba(0, 180, 219, 0.3);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        .folder-node:hover {
+            background: rgba(0, 180, 255, 0.1);
         }
         
-        .card-icon {
-            font-size: 2.8rem;
-            margin-bottom: 15px;
-            color: #00b4db;
+        .folder-icon {
+            color: #00d2ff;
+            margin-right: 8px;
         }
         
-        .card-title {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
+        .file-icon {
+            color: #a0a0a0;
+            margin-right: 8px;
+        }
+        
+        .folder-name {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .empty-folder {
+            color: #888;
+            font-style: italic;
+            padding: 10px;
+        }
+        
+        .folder-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .details-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 180, 255, 0.5);
+        }
+        
+        .details-icon {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #00d2ff;
+        }
+        
+        .details-header h2 {
+            font-size: 1.8rem;
             color: #ffffff;
         }
         
-        .card-description {
-            font-size: 0.95rem;
-            color: #b0b0b0;
-            line-height: 1.5;
+        .folder-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
-        .instructions {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 40px;
-            border-left: 5px solid #00b4db;
+        .stat-card {
+            background: rgba(0, 50, 100, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(0, 180, 255, 0.2);
+            transition: transform 0.3s;
         }
         
-        .instructions h3 {
-            color: #00b4db;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 180, 255, 0.5);
         }
         
-        .instruction-list {
-            padding-left: 20px;
-        }
-        
-        .instruction-list li {
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00d2ff;
             margin-bottom: 10px;
-            line-height: 1.5;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #b0d0ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .contents-list {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .contents-list h3 {
+            color: #00d2ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .file-item:hover {
+            background: rgba(0, 180, 255, 0.1);
+            border-left-color: #00d2ff;
+        }
+        
+        .file-type {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 180, 255, 0.1);
+            border-radius: 8px;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .file-size {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 30px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 180, 255, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 180, 255, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-scan {
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        }
+        
+        .btn-refresh {
+            background: linear-gradient(90deg, #00b09b, #96c93d);
         }
         
         footer {
             text-align: center;
             margin-top: 50px;
-            padding-top: 20px;
+            padding-top: 25px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: #888;
             font-size: 0.9rem;
         }
         
         .last-updated {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             display: inline-block;
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin-top: 10px;
-            font-size: 0.85rem;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #00d2ff;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 210, 255, 0.3);
+            border-top: 5px solid #00d2ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         @media (max-width: 768px) {
-            .folder-contents {
-                grid-template-columns: 1fr;
-            }
-            
             h1 {
                 font-size: 2.2rem;
             }
             
-            .tree-view {
-                font-size: 1rem;
+            .folder-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -195,119 +394,541 @@
 <body>
     <div class="container">
         <header>
-            <h1>📂 Pasta SCAN</h1>
-            <p class="subtitle">Visualizador interativo da estrutura de arquivos e diretórios</p>
+            <h1>🔍 Identificador de Pastas SCAN</h1>
+            <p class="subtitle">Sistema automático de detecção e análise de estrutura de diretórios</p>
+            <div class="scan-info">
+                <div class="info-card">📍 Local: ./SCAN/</div>
+                <div class="info-card">📊 Status: <span id="scanStatus">Aguardando análise</span></div>
+                <div class="info-card">🕒 Última varredura: <span id="lastScanTime">Nunca</span></div>
+            </div>
         </header>
         
-        <section class="folder-structure">
-            <div class="folder-title">
-                <div class="folder-icon">📁</div>
-                <h2>Estrutura da Pasta</h2>
-            </div>
-            
-            <div class="tree-view">
-                <div class="folder">SCAN</div>
-                <div style="margin-left: 20px;">
-                    <div class="folder">├── arquivos/</div>
-                    <div class="folder">├── relatorios/</div>
-                    <div class="folder">├── logs/</div>
-                    <div class="folder">└── resultados/</div>
+        <div class="main-content">
+            <div class="folder-panel">
+                <div class="panel-title">
+                    <div class="panel-icon">📁</div>
+                    <h2>Estrutura Detetada</h2>
+                </div>
+                <div class="tree-container" id="treeContainer">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Varrendo estrutura de pastas...</p>
+                    </div>
                 </div>
             </div>
             
-            <div class="folder-contents">
-                <div class="folder-card" onclick="navigateTo('arquivos')">
-                    <div class="card-icon">📄</div>
-                    <h3 class="card-title">Arquivos</h3>
-                    <p class="card-description">Contém os arquivos originais que foram escaneados e processados.</p>
+            <div class="folder-details">
+                <div class="details-header">
+                    <div class="details-icon" id="detailsIcon">📂</div>
+                    <div>
+                        <h2 id="detailsTitle">Selecione uma pasta</h2>
+                        <p id="detailsSubtitle">Clique em uma pasta à esquerda para ver detalhes</p>
+                    </div>
                 </div>
                 
-                <div class="folder-card" onclick="navigateTo('relatorios')">
-                    <div class="card-icon">📊</div>
-                    <h3 class="card-title">Relatórios</h3>
-                    <p class="card-description">Relatórios detalhados gerados a partir das análises realizadas.</p>
+                <div id="folderStats" class="folder-stats" style="display: none;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statFiles">0</div>
+                        <div class="stat-label">Arquivos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statFolders">0</div>
+                        <div class="stat-label">Subpastas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statSize">0 KB</div>
+                        <div class="stat-label">Tamanho Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLastModified">-</div>
+                        <div class="stat-label">Última Modificação</div>
+                    </div>
                 </div>
                 
-                <div class="folder-card" onclick="navigateTo('logs')">
-                    <div class="card-icon">📋</div>
-                    <h3 class="card-title">Logs</h3>
-                    <p class="card-description">Registros de processamento, erros e atividades do sistema.</p>
+                <div id="folderContents" class="contents-list" style="display: none;">
+                    <h3>Conteúdo da Pasta</h3>
+                    <div id="contentsList">
+                        <!-- Conteúdo será preenchido dinamicamente -->
+                    </div>
                 </div>
                 
-                <div class="folder-card" onclick="navigateTo('resultados')">
-                    <div class="card-icon">✅</div>
-                    <h3 class="card-title">Resultados</h3>
-                    <p class="card-description">Resultados finais e sumários das análises realizadas.</p>
+                <div id="emptyFolderMessage" style="display: none; text-align: center; padding: 40px; color: #888;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">📂</div>
+                    <h3>Pasta vazia</h3>
+                    <p>Esta pasta não contém arquivos ou subpastas</p>
+                </div>
+                
+                <div id="selectFolderMessage" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">👈</div>
+                    <h3>Selecione uma pasta</h3>
+                    <p>Clique em qualquer pasta na árvore de diretórios à esquerda para visualizar seus detalhes e conteúdo</p>
                 </div>
             </div>
-        </section>
+        </div>
         
-        <section class="instructions">
-            <h3>📝 Como Utilizar</h3>
-            <ol class="instruction-list">
-                <li><strong>Para adicionar novos arquivos:</strong> Faça upload ou copie os arquivos para a pasta "arquivos"</li>
-                <li><strong>Para visualizar relatórios:</strong> Acesse a pasta "relatorios" para ver os documentos gerados</li>
-                <li><strong>Para monitorar processamento:</strong> Verifique a pasta "logs" para acompanhar o status</li>
-                <li><strong>Para resultados finais:</strong> Consulte a pasta "resultados" para obter as análises completas</li>
-            </ol>
-        </section>
+        <div class="controls">
+            <button class="btn btn-scan" onclick="scanFolders()">
+                <span>🔍</span> Executar Nova Varredura
+            </button>
+            <button class="btn btn-refresh" onclick="refreshDisplay()">
+                <span>🔄</span> Atualizar Visualização
+            </button>
+        </div>
         
         <footer>
-            <p>Visualizador interativo da pasta SCAN</p>
+            <p>Identificador Automático de Pastas SCAN • Detecção em tempo real da estrutura de diretórios</p>
             <div class="last-updated" id="lastUpdated">
-                Última atualização: Carregando...
+                Sistema inicializado em: Carregando...
             </div>
         </footer>
     </div>
 
     <script>
-        // Atualiza a data de última modificação
-        function updateLastModifiedDate() {
+        // Estrutura simulada da pasta SCAN (seria obtida via backend em um sistema real)
+        let folderStructure = {};
+        let currentSelectedFolder = null;
+        
+        // Simulação de pastas existentes na pasta SCAN
+        const simulatedFolders = {
+            'SCAN': {
+                name: 'SCAN',
+                path: './SCAN/',
+                type: 'folder',
+                children: {},
+                lastModified: new Date().toISOString(),
+                size: 0
+            }
+        };
+        
+        // Tipos de arquivos com ícones correspondentes
+        const fileTypeIcons = {
+            'pdf': '📕',
+            'doc': '📘',
+            'docx': '📘',
+            'txt': '📄',
+            'csv': '📊',
+            'xls': '📈',
+            'xlsx': '📈',
+            'jpg': '🖼️',
+            'jpeg': '🖼️',
+            'png': '🖼️',
+            'gif': '🖼️',
+            'mp4': '🎬',
+            'avi': '🎬',
+            'mp3': '🎵',
+            'wav': '🎵',
+            'zip': '📦',
+            'rar': '📦',
+            'exe': '⚙️',
+            'js': '📜',
+            'html': '🌐',
+            'css': '🎨',
+            'json': '🔣',
+            'xml': '📋',
+            'sql': '🗃️',
+            'log': '📋',
+            'default': '📄'
+        };
+        
+        // Tamanhos de arquivo simulados (em bytes)
+        const fileSizes = {
+            'relatorio_final.pdf': 2457600,
+            'dados_clientes.csv': 512000,
+            'imagem_logo.png': 102400,
+            'backup_dados.zip': 5242880,
+            'config_sistema.json': 5120,
+            'script_automacao.js': 25600,
+            'apresentacao.pptx': 3670016,
+            'audio_gravacao.mp3': 1048576,
+            'video_tutorial.mp4': 15728640,
+            'documentacao.txt': 20480,
+            'erros_sistema.log': 102400,
+            'banco_dados.sql': 2097152
+        };
+        
+        // Função para gerar estrutura de pastas aleatória (simulação)
+        function generateRandomFolderStructure() {
+            const folderNames = [
+                'clientes', 'projetos', 'financeiro', 'marketing', 'ti', 'rh',
+                'vendas', 'suporte', 'desenvolvimento', 'arquivos', 'backup',
+                'documentos', 'imagens', 'videos', 'audios', 'config', 'logs',
+                'temp', 'export', 'import', 'processados', 'pendentes'
+            ];
+            
+            const fileNames = [
+                'relatorio_final.pdf', 'dados_clientes.csv', 'imagem_logo.png',
+                'backup_dados.zip', 'config_sistema.json', 'script_automacao.js',
+                'apresentacao.pptx', 'audio_gravacao.mp3', 'video_tutorial.mp4',
+                'documentacao.txt', 'erros_sistema.log', 'banco_dados.sql'
+            ];
+            
+            // Limpar estrutura anterior
+            folderStructure = JSON.parse(JSON.stringify(simulatedFolders));
+            
+            // Gerar 3-8 pastas aleatórias
+            const numFolders = Math.floor(Math.random() * 6) + 3;
+            const selectedFolders = [];
+            
+            for (let i = 0; i < numFolders; i++) {
+                let folderName;
+                do {
+                    folderName = folderNames[Math.floor(Math.random() * folderNames.length)];
+                } while (selectedFolders.includes(folderName));
+                
+                selectedFolders.push(folderName);
+                
+                // Criar pasta com algumas subpastas e arquivos
+                const folder = {
+                    name: folderName,
+                    path: `./SCAN/${folderName}/`,
+                    type: 'folder',
+                    children: {},
+                    lastModified: new Date(Date.now() - Math.floor(Math.random() * 30) * 86400000).toISOString(),
+                    size: 0
+                };
+                
+                // Adicionar 1-3 subpastas
+                const numSubfolders = Math.floor(Math.random() * 3) + 1;
+                for (let j = 0; j < numSubfolders; j++) {
+                    const subfolderName = `subpasta_${j+1}`;
+                    folder.children[subfolderName] = {
+                        name: subfolderName,
+                        path: `./SCAN/${folderName}/${subfolderName}/`,
+                        type: 'folder',
+                        children: {},
+                        lastModified: new Date(Date.now() - Math.floor(Math.random() * 7) * 86400000).toISOString(),
+                        size: 0
+                    };
+                }
+                
+                // Adicionar 2-6 arquivos
+                const numFiles = Math.floor(Math.random() * 5) + 2;
+                const selectedFiles = [];
+                
+                for (let j = 0; j < numFiles; j++) {
+                    let fileName;
+                    do {
+                        fileName = fileNames[Math.floor(Math.random() * fileNames.length)];
+                    } while (selectedFiles.includes(fileName));
+                    
+                    selectedFiles.push(fileName);
+                    
+                    const fileExtension = fileName.split('.').pop().toLowerCase();
+                    const fileSize = fileSizes[fileName] || (Math.floor(Math.random() * 5000000) + 10000);
+                    
+                    folder.children[fileName] = {
+                        name: fileName,
+                        path: `./SCAN/${folderName}/${fileName}`,
+                        type: 'file',
+                        extension: fileExtension,
+                        size: fileSize,
+                        lastModified: new Date(Date.now() - Math.floor(Math.random() * 3) * 86400000).toISOString()
+                    };
+                    
+                    // Atualizar tamanho total da pasta
+                    folder.size += fileSize;
+                }
+                
+                folderStructure['SCAN'].children[folderName] = folder;
+                folderStructure['SCAN'].size += folder.size;
+            }
+            
+            // Adicionar alguns arquivos na raiz
+            const rootFiles = Math.floor(Math.random() * 3);
+            for (let i = 0; i < rootFiles; i++) {
+                const fileName = `arquivo_raiz_${i+1}.txt`;
+                const fileSize = Math.floor(Math.random() * 100000) + 1000;
+                
+                folderStructure['SCAN'].children[fileName] = {
+                    name: fileName,
+                    path: `./SCAN/${fileName}`,
+                    type: 'file',
+                    extension: 'txt',
+                    size: fileSize,
+                    lastModified: new Date(Date.now() - Math.floor(Math.random() * 5) * 86400000).toISOString()
+                };
+                
+                folderStructure['SCAN'].size += fileSize;
+            }
+            
+            return folderStructure;
+        }
+        
+        // Função para formatar bytes para tamanho legível
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Função para formatar data
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+        }
+        
+        // Função para obter ícone do tipo de arquivo
+        function getFileIcon(extension) {
+            return fileTypeIcons[extension] || fileTypeIcons['default'];
+        }
+        
+        // Função para renderizar a árvore de pastas
+        function renderFolderTree() {
+            const treeContainer = document.getElementById('treeContainer');
+            
+            if (!folderStructure || Object.keys(folderStructure).length === 0) {
+                treeContainer.innerHTML = '<div class="empty-folder">Nenhuma pasta detectada na pasta SCAN</div>';
+                return;
+            }
+            
+            let html = '<div class="tree-view">';
+            
+            function renderNode(node, level = 0, isLast = true, parentPath = '') {
+                const indent = ' '.repeat(level * 4);
+                const connector = level === 0 ? '' : (isLast ? '└── ' : '├── ');
+                
+                if (node.type === 'folder') {
+                    html += `
+                        <div class="folder-node" data-path="${node.path}" data-name="${node.name}" onclick="selectFolder('${node.path}', '${node.name}')">
+                            ${indent}${connector}<span class="folder-icon">📁</span><span class="folder-name">${node.name}/</span>
+                        </div>
+                    `;
+                    
+                    // Renderizar filhos
+                    const childKeys = Object.keys(node.children);
+                    childKeys.forEach((key, index) => {
+                        const child = node.children[key];
+                        const isLastChild = index === childKeys.length - 1;
+                        renderNode(child, level + 1, isLastChild, node.path);
+                    });
+                } else {
+                    html += `
+                        <div class="folder-node" style="margin-left: ${level * 20 + 20}px;">
+                            ${indent}${connector}<span class="file-icon">${getFileIcon(node.extension)}</span><span class="folder-name">${node.name}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Renderizar a raiz (SCAN)
+            const root = folderStructure['SCAN'];
+            if (root) {
+                renderNode(root);
+            }
+            
+            html += '</div>';
+            treeContainer.innerHTML = html;
+        }
+        
+        // Função para selecionar uma pasta e mostrar detalhes
+        function selectFolder(path, name) {
+            currentSelectedFolder = { path, name };
+            
+            // Encontrar a pasta na estrutura
+            let folder = findFolderInStructure(path);
+            
+            if (!folder) {
+                // Se não encontrar, criar objeto vazio
+                folder = {
+                    name: name,
+                    path: path,
+                    type: 'folder',
+                    children: {},
+                    lastModified: new Date().toISOString(),
+                    size: 0
+                };
+            }
+            
+            // Atualizar UI
+            document.getElementById('detailsIcon').textContent = '📂';
+            document.getElementById('detailsTitle').textContent = name;
+            document.getElementById('detailsSubtitle').textContent = path;
+            
+            // Mostrar estatísticas
+            document.getElementById('folderStats').style.display = 'grid';
+            document.getElementById('selectFolderMessage').style.display = 'none';
+            
+            // Calcular estatísticas
+            let fileCount = 0;
+            let folderCount = 0;
+            let totalSize = 0;
+            let lastModified = folder.lastModified;
+            
+            Object.values(folder.children).forEach(child => {
+                if (child.type === 'file') {
+                    fileCount++;
+                    totalSize += child.size || 0;
+                    if (new Date(child.lastModified) > new Date(lastModified)) {
+                        lastModified = child.lastModified;
+                    }
+                } else if (child.type === 'folder') {
+                    folderCount++;
+                    // Para simplicidade, não percorremos subpastas recursivamente aqui
+                }
+            });
+            
+            // Atualizar estatísticas
+            document.getElementById('statFiles').textContent = fileCount;
+            document.getElementById('statFolders').textContent = folderCount;
+            document.getElementById('statSize').textContent = formatBytes(totalSize);
+            document.getElementById('statLastModified').textContent = formatDate(lastModified);
+            
+            // Atualizar lista de conteúdos
+            const contentsList = document.getElementById('contentsList');
+            contentsList.innerHTML = '';
+            
+            if (Object.keys(folder.children).length === 0) {
+                document.getElementById('folderContents').style.display = 'none';
+                document.getElementById('emptyFolderMessage').style.display = 'block';
+            } else {
+                document.getElementById('folderContents').style.display = 'block';
+                document.getElementById('emptyFolderMessage').style.display = 'none';
+                
+                // Ordenar: pastas primeiro, depois arquivos
+                const childrenArray = Object.values(folder.children);
+                childrenArray.sort((a, b) => {
+                    if (a.type === 'folder' && b.type !== 'folder') return -1;
+                    if (a.type !== 'folder' && b.type === 'folder') return 1;
+                    return a.name.localeCompare(b.name);
+                });
+                
+                childrenArray.forEach(child => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    if (child.type === 'folder') {
+                        fileItem.innerHTML = `
+                            <div class="file-type" style="background: rgba(0, 180, 255, 0.15);">📁</div>
+                            <div class="file-info">
+                                <div class="file-name">${child.name}/</div>
+                                <div class="file-size">Pasta</div>
+                            </div>
+                        `;
+                        fileItem.onclick = () => selectFolder(child.path, child.name);
+                    } else {
+                        const icon = getFileIcon(child.extension);
+                        fileItem.innerHTML = `
+                            <div class="file-type">${icon}</div>
+                            <div class="file-info">
+                                <div class="file-name">${child.name}</div>
+                                <div class="file-size">${formatBytes(child.size)} • Modificado: ${formatDate(child.lastModified)}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    contentsList.appendChild(fileItem);
+                });
+            }
+            
+            // Destacar a pasta selecionada na árvore
+            document.querySelectorAll('.folder-node').forEach(node => {
+                node.style.background = '';
+                if (node.getAttribute('data-path') === path) {
+                    node.style.background = 'rgba(0, 180, 255, 0.2)';
+                    node.style.borderRadius = '5px';
+                }
+            });
+        }
+        
+        // Função auxiliar para encontrar pasta na estrutura
+        function findFolderInStructure(path) {
+            if (path === './SCAN/') {
+                return folderStructure['SCAN'];
+            }
+            
+            const parts = path.replace('./SCAN/', '').split('/').filter(p => p);
+            let current = folderStructure['SCAN'];
+            
+            for (const part of parts) {
+                if (current && current.children && current.children[part]) {
+                    current = current.children[part];
+                } else {
+                    return null;
+                }
+            }
+            
+            return current;
+        }
+        
+        // Função para executar varredura de pastas
+        function scanFolders() {
+            // Atualizar status
+            document.getElementById('scanStatus').textContent = 'Varrendo...';
+            document.getElementById('scanStatus').style.color = '#ffcc00';
+            
+            // Mostrar loading na árvore
+            document.getElementById('treeContainer').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Detectando pastas em ./SCAN/...</p>
+                </div>
+            `;
+            
+            // Simular delay de varredura
+            setTimeout(() => {
+                // Gerar nova estrutura aleatória
+                generateRandomFolderStructure();
+                
+                // Renderizar árvore
+                renderFolderTree();
+                
+                // Atualizar status
+                document.getElementById('scanStatus').textContent = 'Completo';
+                document.getElementById('scanStatus').style.color = '#00ff88';
+                document.getElementById('lastScanTime').textContent = new Date().toLocaleTimeString('pt-BR');
+                
+                // Se houver uma pasta selecionada, manter selecionada
+                if (currentSelectedFolder) {
+                    selectFolder(currentSelectedFolder.path, currentSelectedFolder.name);
+                } else {
+                    // Selecionar a primeira pasta encontrada
+                    const firstFolder = Object.values(folderStructure['SCAN'].children).find(child => child.type === 'folder');
+                    if (firstFolder) {
+                        selectFolder(firstFolder.path, firstFolder.name);
+                    }
+                }
+                
+                updateLastUpdated();
+            }, 1500);
+        }
+        
+        // Função para atualizar visualização
+        function refreshDisplay() {
+            renderFolderTree();
+            if (currentSelectedFolder) {
+                selectFolder(currentSelectedFolder.path, currentSelectedFolder.name);
+            }
+            updateLastUpdated();
+        }
+        
+        // Função para atualizar data/hora
+        function updateLastUpdated() {
             const now = new Date();
             const options = { 
                 day: '2-digit', 
                 month: '2-digit', 
                 year: 'numeric',
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
+                second: '2-digit'
             };
             const formattedDate = now.toLocaleDateString('pt-BR', options);
             document.getElementById('lastUpdated').textContent = 
                 `Última atualização: ${formattedDate}`;
         }
         
-        // Função para navegar para as pastas (simulação)
-        function navigateTo(folderName) {
-            const folderNames = {
-                'arquivos': 'Arquivos',
-                'relatorios': 'Relatórios',
-                'logs': 'Logs',
-                'resultados': 'Resultados'
-            };
-            
-            alert(`Navegando para a pasta: ${folderNames[folderName]}\n\nEm um ambiente real, esta ação abriria o diretório correspondente.`);
-            
-            // Em um ambiente real, você redirecionaria para a pasta:
-            // window.location.href = `./SCAN/${folderName}`;
-        }
-        
-        // Adiciona interatividade aos cards
+        // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            updateLastModifiedDate();
+            // Executar primeira varredura
+            scanFolders();
             
-            // Adiciona efeito de clique aos cards
-            const cards = document.querySelectorAll('.folder-card');
-            cards.forEach(card => {
-                card.addEventListener('click', function() {
-                    this.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                });
-            });
+            // Atualizar data/hora inicial
+            updateLastUpdated();
             
-            // Simula atualização periódica
-            setInterval(updateLastModifiedDate, 60000); // Atualiza a cada minuto
+            // Atualizar a cada minuto
+            setInterval(updateLastUpdated, 60000);
         });
     </script>
 </body>
