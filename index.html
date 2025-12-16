@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conteúdo da Pasta SCAN</title>
+    <title>Explorador da Pasta SCAN</title>
     <style>
         * {
             margin: 0;
@@ -13,110 +13,121 @@
         }
         
         body {
-            background-color: #f6f8fa;
-            color: #24292f;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
             padding: 20px;
-            line-height: 1.6;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            background-color: white;
-            border-radius: 6px;
-            border: 1px solid #d0d7de;
-            padding: 30px;
+            background-color: #161b22;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            overflow: hidden;
         }
         
         header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #d0d7de;
+            background-color: #0d1117;
+            padding: 25px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
         h1 {
-            color: #0969da;
-            font-size: 28px;
-            margin-bottom: 10px;
+            color: #58a6ff;
+            font-size: 24px;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 10px;
         }
         
-        .path-info {
-            background-color: #f6f8fa;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 25px;
-            border: 1px solid #d0d7de;
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
             font-family: 'SFMono-Regular', Consolas, monospace;
             font-size: 14px;
         }
         
-        .contents {
-            margin-top: 20px;
+        .breadcrumb-item {
+            color: #8b949e;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
         
-        .item {
+        .breadcrumb-item:hover {
+            background-color: #30363d;
+            color: #c9d1d9;
+        }
+        
+        .breadcrumb-separator {
+            color: #484f58;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            background-color: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            background-color: #ffffff;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
+            gap: 6px;
             transition: all 0.2s;
-            text-decoration: none;
-            color: inherit;
         }
         
-        .item:hover {
-            background-color: #f6f8fa;
-            border-color: #0969da;
-            transform: translateY(-2px);
+        .btn:hover {
+            background-color: #30363d;
+            border-color: #8b949e;
         }
         
-        .item-icon {
-            font-size: 20px;
-            margin-right: 12px;
-            width: 24px;
-            text-align: center;
+        .btn-primary {
+            background-color: #238636;
+            color: white;
+            border-color: #2ea043;
         }
         
-        .folder {
-            color: #54aeff;
+        .btn-primary:hover {
+            background-color: #2ea043;
         }
         
-        .file {
-            color: #57606a;
-        }
-        
-        .item-info {
-            flex: 1;
-        }
-        
-        .item-name {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-        
-        .item-details {
-            font-size: 12px;
-            color: #57606a;
+        .contents-area {
+            padding: 20px;
+            min-height: 400px;
         }
         
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #57606a;
+            padding: 60px;
+            color: #8b949e;
         }
         
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0969da;
+            border: 3px solid #30363d;
+            border-top: 3px solid #58a6ff;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -129,20 +140,10 @@
             100% { transform: rotate(360deg); }
         }
         
-        .error {
-            background-color: #ffebe9;
-            border: 1px solid #ff8182;
-            border-radius: 6px;
-            padding: 20px;
-            color: #cf222e;
+        .empty-folder {
             text-align: center;
-        }
-        
-        .empty {
-            text-align: center;
-            padding: 40px;
-            color: #57606a;
-            font-style: italic;
+            padding: 60px;
+            color: #8b949e;
         }
         
         .empty-icon {
@@ -151,134 +152,510 @@
             opacity: 0.5;
         }
         
-        footer {
-            margin-top: 30px;
-            text-align: center;
-            color: #57606a;
-            font-size: 14px;
-            padding-top: 20px;
-            border-top: 1px solid #d0d7de;
+        .file-list {
+            display: grid;
+            gap: 10px;
         }
         
-        .refresh-btn {
-            background-color: #0969da;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
-            transition: background-color 0.2s;
-            display: inline-flex;
+        .file-item {
+            display: flex;
             align-items: center;
-            gap: 5px;
+            padding: 12px 16px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
         }
         
-        .refresh-btn:hover {
-            background-color: #0550ae;
+        .file-item:hover {
+            background-color: #161b22;
+            border-color: #58a6ff;
+            transform: translateX(5px);
+        }
+        
+        .file-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .file-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .file-details {
+            font-size: 12px;
+            color: #8b949e;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .file-item:hover .file-actions {
+            opacity: 1;
+        }
+        
+        .action-btn {
+            background: none;
+            border: 1px solid #30363d;
+            color: #8b949e;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background-color: #21262d;
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+        
+        .download-btn {
+            background-color: #238636;
+            border-color: #2ea043;
+            color: white;
+        }
+        
+        .download-btn:hover {
+            background-color: #2ea043;
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #58a6ff;
+            background: none;
+            border: none;
+            padding: 8px 0;
+            cursor: pointer;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .error {
+            background-color: #490202;
+            border: 1px solid #f85149;
+            border-radius: 6px;
+            padding: 20px;
+            color: #f85149;
+        }
+        
+        .status-bar {
+            background-color: #0d1117;
+            padding: 15px 20px;
+            border-top: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #8b949e;
+        }
+        
+        .status-info {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Modal para download */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background-color: #0d1117;
+            padding: 20px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            color: #58a6ff;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #8b949e;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background-color: #30363d;
+            color: #c9d1d9;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .download-info {
+            background-color: #0d1117;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #30363d;
+        }
+        
+        .download-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .download-link {
+            display: block;
+            background-color: #238636;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .download-link:hover {
+            background-color: #2ea043;
+        }
+        
+        @media (max-width: 768px) {
+            .header-left {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .file-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .file-actions {
+                align-self: flex-end;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>
-                <span>📂</span>
-                Pasta SCAN
-            </h1>
-            <p>Conteúdo do diretório SCAN no repositório GitHub</p>
+            <div class="header-left">
+                <h1>
+                    <span>📂</span>
+                    Explorador SCAN
+                </h1>
+                <div class="breadcrumb" id="breadcrumb">
+                    <!-- Breadcrumb será gerado dinamicamente -->
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn" onclick="refreshContents()">
+                    <span>🔄</span>
+                    Atualizar
+                </button>
+                <button class="btn btn-primary" onclick="goHome()">
+                    <span>🏠</span>
+                    Pasta Raiz
+                </button>
+            </div>
         </header>
         
-        <div class="path-info">
-            <strong>Caminho:</strong> /SCAN/
-            <br>
-            <small>Repositório: <span id="repo-info">Carregando...</span></small>
-        </div>
-        
-        <div id="contents" class="contents">
+        <div class="contents-area" id="contents">
             <div class="loading">
                 <div class="spinner"></div>
                 <p>Carregando conteúdo da pasta SCAN...</p>
             </div>
         </div>
         
-        <footer>
-            <p>Visualizador de diretório GitHub</p>
-            <button class="refresh-btn" onclick="loadContents()">
-                <span>🔄</span>
-                Atualizar
-            </button>
-            <p id="last-update" style="margin-top: 10px; font-size: 12px;"></p>
-        </footer>
+        <div class="status-bar">
+            <div class="status-info">
+                <span id="item-count">0 itens</span>
+                <span id="current-path">/</span>
+            </div>
+            <div id="last-update">
+                Carregando...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Download -->
+    <div class="modal" id="downloadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>📦</span>
+                    <span id="modalFileName">Arquivo.rar</span>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="download-info">
+                    <p><strong>Tamanho:</strong> <span id="modalFileSize">--</span></p>
+                    <p><strong>Tipo:</strong> Arquivo RAR</p>
+                    <p>Clique no botão abaixo para baixar o arquivo.</p>
+                </div>
+                <div class="download-options">
+                    <a id="downloadLink" class="download-link" href="#" download>
+                        <span>⬇️</span> Baixar Arquivo
+                    </a>
+                    <button class="btn" onclick="copyDownloadLink()">
+                        <span>📋</span> Copiar Link Direto
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Configurações do repositório
-        const REPO_OWNER = 'Mago-Scan'; // Substitua pelo seu nome de usuário
+        // Configuração do repositório
+        const REPO_OWNER = 'Mago-Scan'; // Substitua pelo seu nome de usuário do GitHub
         const REPO_NAME = 'Mago-Scan.github.io'; // Substitua pelo nome do repositório
-        const SCAN_PATH = 'SCAN'; // Nome da pasta
+        const BASE_PATH = 'SCAN'; // Pasta base
+        
+        // Estado da navegação
+        let currentPath = BASE_PATH;
+        let historyStack = [];
         
         // Elementos DOM
         const contentsDiv = document.getElementById('contents');
+        const breadcrumbDiv = document.getElementById('breadcrumb');
+        const itemCountSpan = document.getElementById('item-count');
+        const currentPathSpan = document.getElementById('current-path');
         const lastUpdateSpan = document.getElementById('last-update');
-        const repoInfoSpan = document.getElementById('repo-info');
+        const downloadModal = document.getElementById('downloadModal');
         
-        // Função para atualizar timestamp
+        // Extensões de arquivo para ícones
+        const fileIcons = {
+            // Pastas
+            'folder': '📁',
+            
+            // Arquivos
+            'rar': '📦',
+            'zip': '📦',
+            '7z': '📦',
+            'tar': '📦',
+            'gz': '📦',
+            'pdf': '📕',
+            'doc': '📘',
+            'docx': '📘',
+            'xls': '📊',
+            'xlsx': '📊',
+            'txt': '📄',
+            'json': '🔣',
+            'js': '📜',
+            'html': '🌐',
+            'css': '🎨',
+            'py': '🐍',
+            'java': '☕',
+            'cpp': '⚙️',
+            'jpg': '🖼️',
+            'jpeg': '🖼️',
+            'png': '🖼️',
+            'gif': '🖼️',
+            'mp4': '🎬',
+            'mp3': '🎵',
+            'avi': '🎬',
+            'wav': '🎵',
+            'default': '📄'
+        };
+        
+        // Atualizar timestamp
         function updateTimestamp() {
             const now = new Date();
             lastUpdateSpan.textContent = `Última atualização: ${now.toLocaleTimeString('pt-BR')}`;
         }
         
-        // Função para mostrar erro
+        // Atualizar breadcrumb
+        function updateBreadcrumb() {
+            const parts = currentPath.split('/');
+            let html = '';
+            
+            parts.forEach((part, index) => {
+                const isLast = index === parts.length - 1;
+                const pathUpToHere = parts.slice(0, index + 1).join('/');
+                
+                html += `
+                    <span class="breadcrumb-item" onclick="navigateTo('${pathUpToHere}')">
+                        ${part === BASE_PATH ? '📂 ' + part : part}
+                    </span>
+                `;
+                
+                if (!isLast) {
+                    html += '<span class="breadcrumb-separator">/</span>';
+                }
+            });
+            
+            breadcrumbDiv.innerHTML = html;
+            currentPathSpan.textContent = currentPath;
+        }
+        
+        // Navegar para um caminho
+        async function navigateTo(path) {
+            // Salvar histórico se for uma navegação para frente
+            if (path !== currentPath) {
+                historyStack.push(currentPath);
+            }
+            
+            currentPath = path;
+            await loadContents();
+            updateBreadcrumb();
+        }
+        
+        // Voltar para a pasta anterior
+        function goBack() {
+            if (historyStack.length > 0) {
+                const previousPath = historyStack.pop();
+                currentPath = previousPath;
+                loadContents();
+                updateBreadcrumb();
+            }
+        }
+        
+        // Ir para a pasta raiz
+        function goHome() {
+            historyStack = [];
+            navigateTo(BASE_PATH);
+        }
+        
+        // Atualizar conteúdo
+        function refreshContents() {
+            loadContents();
+        }
+        
+        // Mostrar erro
         function showError(message) {
             contentsDiv.innerHTML = `
                 <div class="error">
-                    <h3>❌ Erro ao carregar conteúdo</h3>
+                    <h3>❌ Erro</h3>
                     <p>${message}</p>
-                    <p style="margin-top: 10px; font-size: 12px;">
-                        Certifique-se de que o repositório e o caminho estão configurados corretamente.
+                    <p style="margin-top: 10px;">
+                        <button class="btn" onclick="goHome()">Voltar para a pasta raiz</button>
                     </p>
                 </div>
             `;
+            itemCountSpan.textContent = '0 itens';
             updateTimestamp();
         }
         
-        // Função para mostrar pasta vazia
-        function showEmpty() {
+        // Mostrar pasta vazia
+        function showEmptyFolder() {
+            const backButton = currentPath !== BASE_PATH ? 
+                `<button class="back-btn" onclick="goBack()">← Voltar</button>` : '';
+            
             contentsDiv.innerHTML = `
-                <div class="empty">
+                ${backButton}
+                <div class="empty-folder">
                     <div class="empty-icon">📂</div>
                     <h3>Pasta vazia</h3>
-                    <p>A pasta SCAN não contém nenhum arquivo ou subpasta.</p>
+                    <p>Esta pasta não contém arquivos ou subpastas.</p>
                 </div>
             `;
+            itemCountSpan.textContent = '0 itens';
         }
         
-        // Função para carregar conteúdo da pasta SCAN
+        // Obter ícone para arquivo
+        function getFileIcon(filename, isFolder = false) {
+            if (isFolder) return fileIcons['folder'];
+            
+            const extension = filename.split('.').pop().toLowerCase();
+            return fileIcons[extension] || fileIcons['default'];
+        }
+        
+        // Formatar bytes
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Formatar data
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+        
+        // Carregar conteúdo do diretório
         async function loadContents() {
             try {
-                // Atualizar informações do repositório
-                repoInfoSpan.textContent = `${REPO_OWNER}/${REPO_NAME}`;
-                
-                // Mostrar estado de carregamento
+                // Mostrar loading
                 contentsDiv.innerHTML = `
                     <div class="loading">
                         <div class="spinner"></div>
-                        <p>Carregando conteúdo da pasta SCAN...</p>
+                        <p>Carregando conteúdo...</p>
                     </div>
                 `;
                 
-                // Usar a API do GitHub para listar o conteúdo da pasta
-                const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${SCAN_PATH}`;
-                
-                console.log('Buscando:', apiUrl); // Para debug
+                // Construir URL da API
+                const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${currentPath}`;
                 
                 const response = await fetch(apiUrl);
                 
                 if (!response.ok) {
                     if (response.status === 404) {
-                        showError(`Pasta "${SCAN_PATH}" não encontrada no repositório.`);
+                        showError(`Caminho "${currentPath}" não encontrado no repositório.`);
                     } else {
                         showError(`Erro ${response.status}: ${response.statusText}`);
                     }
@@ -287,49 +664,77 @@
                 
                 const data = await response.json();
                 
-                // Verificar se é um array (conteúdo da pasta) ou um objeto (arquivo único)
+                // Verificar se é um array
                 if (!Array.isArray(data)) {
-                    showError(`"${SCAN_PATH}" é um arquivo, não uma pasta.`);
+                    // Se não for array, é um arquivo único
+                    showFileInfo(data);
                     return;
                 }
                 
-                // Ordenar: pastas primeiro, depois arquivos, ambos em ordem alfabética
+                // Ordenar: pastas primeiro, depois arquivos
                 data.sort((a, b) => {
                     if (a.type === 'dir' && b.type !== 'dir') return -1;
                     if (a.type !== 'dir' && b.type === 'dir') return 1;
                     return a.name.localeCompare(b.name);
                 });
                 
-                // Construir HTML
+                // Construir lista de itens
                 if (data.length === 0) {
-                    showEmpty();
+                    showEmptyFolder();
                 } else {
-                    let html = '';
+                    let itemsHTML = '';
+                    
+                    // Botão de voltar (se não estiver na raiz)
+                    if (currentPath !== BASE_PATH) {
+                        itemsHTML += `
+                            <button class="back-btn" onclick="goBack()">
+                                ← Voltar para pasta anterior
+                            </button>
+                        `;
+                    }
+                    
+                    itemsHTML += '<div class="file-list">';
                     
                     data.forEach(item => {
                         const isFolder = item.type === 'dir';
-                        const icon = isFolder ? '📁' : '📄';
-                        const iconClass = isFolder ? 'folder' : 'file';
-                        const typeText = isFolder ? 'Pasta' : 'Arquivo';
-                        const sizeInfo = isFolder ? '' : ` • ${formatBytes(item.size || 0)}`;
-                        const itemUrl = item.html_url;
+                        const icon = getFileIcon(item.name, isFolder);
+                        const isRarFile = item.name.toLowerCase().endsWith('.rar');
                         
-                        html += `
-                            <a href="${itemUrl}" target="_blank" class="item">
-                                <div class="item-icon ${iconClass}">${icon}</div>
-                                <div class="item-info">
-                                    <div class="item-name">${item.name}</div>
-                                    <div class="item-details">
-                                        ${typeText}${sizeInfo}
+                        itemsHTML += `
+                            <div class="file-item" onclick="${isFolder ? `navigateTo('${currentPath}/${item.name}')` : ''}">
+                                <div class="file-icon">${icon}</div>
+                                <div class="file-info">
+                                    <div>
+                                        <div class="file-name">${item.name}</div>
+                                        <div class="file-details">
+                                            ${isFolder ? 'Pasta' : 'Arquivo'} • 
+                                            ${isFolder ? '' : formatBytes(item.size)} • 
+                                            Última alteração: ${formatDate(item.updated_at || item.created_at)}
+                                        </div>
+                                    </div>
+                                    <div class="file-actions">
+                                        ${!isFolder ? `
+                                            <button class="action-btn" title="Ver detalhes" onclick="event.stopPropagation(); showFileInfo(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                                👁️
+                                            </button>
+                                            ${isRarFile ? `
+                                                <button class="action-btn download-btn" title="Baixar arquivo" onclick="event.stopPropagation(); showDownloadModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                                                    ⬇️
+                                                </button>
+                                            ` : ''}
+                                        ` : ''}
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         `;
                     });
                     
-                    contentsDiv.innerHTML = html;
+                    itemsHTML += '</div>';
+                    contentsDiv.innerHTML = itemsHTML;
                 }
                 
+                // Atualizar contador
+                itemCountSpan.textContent = `${data.length} ${data.length === 1 ? 'item' : 'itens'}`;
                 updateTimestamp();
                 
             } catch (error) {
@@ -338,17 +743,107 @@
             }
         }
         
-        // Função para formatar bytes
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        // Mostrar informações do arquivo
+        function showFileInfo(fileData) {
+            const isRarFile = fileData.name.toLowerCase().endsWith('.rar');
+            const icon = getFileIcon(fileData.name, false);
+            const rawUrl = fileData.download_url;
+            
+            let fileHTML = `
+                <button class="back-btn" onclick="goBack()">← Voltar</button>
+                <div class="file-item" style="margin-top: 20px;">
+                    <div class="file-icon" style="font-size: 32px;">${icon}</div>
+                    <div class="file-info">
+                        <div style="flex: 1;">
+                            <div class="file-name" style="font-size: 18px;">${fileData.name}</div>
+                            <div class="file-details" style="margin-top: 10px;">
+                                <p><strong>Tipo:</strong> ${fileData.type === 'dir' ? 'Pasta' : 'Arquivo'}</p>
+                                <p><strong>Tamanho:</strong> ${formatBytes(fileData.size)}</p>
+                                <p><strong>Última alteração:</strong> ${formatDate(fileData.updated_at || fileData.created_at)}</p>
+                                <p><strong>Caminho:</strong> ${fileData.path}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn" onclick="goBack()">← Voltar para lista</button>
+            `;
+            
+            if (isRarFile) {
+                fileHTML += `
+                    <button class="btn btn-primary" onclick="showDownloadModal(${JSON.stringify(fileData).replace(/"/g, '&quot;')})">
+                        ⬇️ Baixar Arquivo
+                    </button>
+                `;
+            }
+            
+            fileHTML += `</div>`;
+            
+            contentsDiv.innerHTML = fileHTML;
+            itemCountSpan.textContent = '1 item (detalhes)';
+            updateTimestamp();
         }
         
-        // Carregar conteúdo quando a página for aberta
-        document.addEventListener('DOMContentLoaded', loadContents);
+        // Mostrar modal de download para arquivos RAR
+        function showDownloadModal(fileData) {
+            const fileName = fileData.name;
+            const fileSize = formatBytes(fileData.size);
+            const rawUrl = fileData.download_url;
+            
+            // Configurar modal
+            document.getElementById('modalFileName').textContent = fileName;
+            document.getElementById('modalFileSize').textContent = fileSize;
+            
+            // Configurar link de download
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = rawUrl;
+            downloadLink.download = fileName;
+            
+            // Mostrar modal
+            downloadModal.style.display = 'flex';
+            
+            // Salvar URL para copiar
+            downloadLink.setAttribute('data-raw-url', rawUrl);
+        }
+        
+        // Fechar modal
+        function closeModal() {
+            downloadModal.style.display = 'none';
+        }
+        
+        // Copiar link de download para a área de transferência
+        async function copyDownloadLink() {
+            const downloadLink = document.getElementById('downloadLink');
+            const rawUrl = downloadLink.getAttribute('data-raw-url');
+            
+            try {
+                await navigator.clipboard.writeText(rawUrl);
+                alert('Link copiado para a área de transferência!');
+            } catch (err) {
+                console.error('Erro ao copiar:', err);
+                alert('Erro ao copiar o link. Tente manualmente.');
+            }
+        }
+        
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            if (event.target === downloadModal) {
+                closeModal();
+            }
+        }
+        
+        // Fechar modal com ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBreadcrumb();
+            loadContents();
+        });
     </script>
 </body>
 </html>
